@@ -31,12 +31,12 @@ if (outDirIdx > -1) {
       mksnapshotArgs = mksnapshotArgs.concat(args.slice(outDirIdx + 2))
     }
   } else {
-    console.log('Error! Output directory argument given but directory not specified.')
+    throw new Error('Error! Output directory argument given but directory not specified.')
     process.exit(1)
   }
 }
 if (args.includes('--startup_blob')) {
-  console.log('--startup_blob argument not supported. Use --output_dir to specify where to output snapshot_blob.bin')
+  throw new Error('--startup_blob argument not supported. Use --output_dir to specify where to output snapshot_blob.bin')
   process.exit(1)
 } else {
   mksnapshotArgs = mksnapshotArgs.concat(['--startup_blob', 'snapshot_blob.bin'])
@@ -65,7 +65,7 @@ if (mksnapshotProcess.status !== 0) {
   if (code == null && mksnapshotProcess.signal === 'SIGILL') {
     code = 1
   }
-  console.log('Error running mksnapshot.')
+  throw new Error('Error running mksnapshot.')
   process.exit(code)
 }
 if (args.includes('--help')) {
@@ -87,7 +87,7 @@ const v8ContextGenOptions = {
 }
 const v8ContextGenProcess = spawnSync(v8ContextGenCommand, v8ContextGenArgs, v8ContextGenOptions)
 if (v8ContextGenProcess.status !== 0) {
-  console.log('Error running the v8 context snapshot generator.', v8ContextGenProcess)
+  throw new Error('Error running the v8 context snapshot generator.' + JSON.stringify(v8ContextGenProcess))
   process.exit(v8ContextGenProcess.status)
 }
 process.exit(0)
